@@ -20,6 +20,8 @@ import {
 } from "./helpers/ValidationSchemas";
 import "../App.css";
 import { addQuestions } from "../services/questions";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ParentComponent = () => {
   const [isMcqType, setIsMcqType] = useState(null);
@@ -27,7 +29,6 @@ const ParentComponent = () => {
   const [values, setValues] = useState({
     open: false,
     options: [],
-    questionAddedMessage: false,
   });
 
   const optionFormik = useFormik({
@@ -103,8 +104,10 @@ const ParentComponent = () => {
   const handleFinalSubmission = async () => {
     const response = await addQuestions({ questions });
     if (response) {
-      setValues({ ...values, questionAddedMessage: true });
-      window.location.reload();
+      toast("Question uploaded successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   };
 
@@ -198,12 +201,6 @@ const ParentComponent = () => {
         </div>
       )}
 
-      <div>
-        {values.questionAddedMessage && (
-          <LabelComponent text={"Question Paper was successfully uploaded"} />
-        )}
-      </div>
-
       <div style={{ height: "20rem", marginTop: "1rem" }}>
         <div
           style={{
@@ -247,6 +244,7 @@ const ParentComponent = () => {
           />
         )}
       </Fragment>
+      <ToastContainer />
     </div>
   );
 };

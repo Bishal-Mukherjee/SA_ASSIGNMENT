@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -13,6 +14,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LabelComponent from "../helpers/LabelComponent";
 import { useNavigate } from "react-router-dom";
 import { userRegistration } from "../../services/users";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Regsiter = () => {
   const navigate = useNavigate();
@@ -30,19 +33,21 @@ const Regsiter = () => {
       password: "",
     },
     onSubmit: async () => {
-      await userRegistration({
+      const response = await userRegistration({
         name: formik.values.name,
         email: formik.values.email,
         password: formik.values.password,
       });
+      if (response) {
+        formik.handleReset();
+        toast(response.message);
+      }
     },
   });
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      navigate("/");
-    } else {
+    if (user) {
       navigate("/questions");
     }
   }, []);
@@ -125,6 +130,7 @@ const Regsiter = () => {
           </form>
         </Paper>
       </div>
+      <ToastContainer />
     </div>
   );
 };
