@@ -14,6 +14,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LabelComponent from "../helpers/LabelComponent";
 import { useNavigate } from "react-router-dom";
 import { userLogin } from "../../services/users";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,15 +31,21 @@ const Login = () => {
       password: "",
     },
     onSubmit: async () => {
-      const { token, user } = await userLogin({
-        email: formik.values.email,
-        password: formik.values.password,
-      });
-      if (token) {
-        window.location.reload();
-        navigate("/questions");
-        localStorage.setItem("token", JSON.stringify(token));
-        localStorage.setItem("user", JSON.stringify(user));
+      try {
+        const response = await userLogin({
+          email: formik.values.email,
+          password: formik.values.password,
+        });
+        const { token, user } = response;
+        if (token) {
+          window.location.reload();
+          navigate("/questions");
+          localStorage.setItem("token", JSON.stringify(token));
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Login failed");
       }
     },
   });
@@ -123,6 +131,7 @@ const Login = () => {
           </form>
         </Paper>
       </div>
+      <ToastContainer />
     </div>
   );
 };

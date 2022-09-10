@@ -10,6 +10,7 @@ import {
 import { Delete, Edit, SaveAlt, Check } from "@mui/icons-material";
 import LabelComponent from "../helpers/LabelComponent";
 import lodash from "lodash";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const QuestionOption = ({
   optionText,
@@ -94,6 +95,14 @@ const McqQuestion = ({ optionFormik, questionFormik, values, setValues }) => {
       return options[index] === n;
     });
     setValues({ ...values, options: [...options] });
+  };
+
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
   };
 
   return (
